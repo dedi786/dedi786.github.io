@@ -3,558 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Saklar — Masuk ke Akun</title>
+<title>Masuk / Daftar — Saklar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#07070b;
-    --navy:#12233b;
-    --navy-deep:#0c1a2e;
-    --ivory:#f5f1e8;
-    --amber:#e8a33d;
-    --amber-dim:#b97f28;
-    --slate:#5b6472;
-    --danger:#d64545;
-    --radius:20px;
-    --dur:1s;
+    --ink:#07070b; --navy:#12233b; --navy-deep:#0c1a2e;
+    --ivory:#f5f1e8; --amber:#e8a33d; --teal:#2fb6a6; --violet:#8b7cf6;
+    --slate:#5b6472; --mist:#9aa7b8; --danger:#d64545;
   }
-
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;}
+  html,body{margin:0;padding:0;min-height:100%;}
   body{
-    font-family:'IBM Plex Sans', sans-serif;
-    background:var(--ink);
-    overflow:hidden;
+    font-family:'IBM Plex Sans',sans-serif;
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 60%, #08111f 100%);
     color:var(--ivory);
-    transition:background var(--dur) ease;
+    display:flex;align-items:center;justify-content:center;
+    padding:32px 20px;position:relative;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
   }
-  body.lights-on{
-    background:var(--navy);
-  }
+  .glow{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;}
+  .glow-1{width:420px;height:420px;background:rgba(232,163,61,.16);top:-120px;left:-120px;}
+  .glow-2{width:360px;height:360px;background:rgba(47,182,166,.12);bottom:-140px;right:-100px;}
+  .glow-3{width:300px;height:300px;background:rgba(139,124,246,.12);bottom:20%;left:60%;}
 
-  /* ---------- Panggung saklar (kondisi mati lampu) ---------- */
-  .power-stage{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--ink);
-    transition:background var(--dur) ease;
-    z-index:1;
+  .card{
+    position:relative;z-index:1;width:100%;max-width:420px;
+    background:rgba(245,241,232,.045);
+    border:1px solid rgba(245,241,232,.12);
+    border-radius:22px;padding:36px 32px;
+    box-shadow:0 40px 80px rgba(0,0,0,.45);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   }
-  body.lights-on .power-stage{
-    background:var(--navy);
-    pointer-events:none;
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ivory);margin-bottom:26px;}
+  .brand-logo{
+    width:38px;height:38px;border-radius:11px;background:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 18px rgba(232,163,61,.4);
   }
+  .brand-logo svg{width:20px;height:20px;color:var(--ink);}
+  .brand-name{font-family:'Fraunces',serif;font-weight:600;font-size:22px;}
+  .card h1{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:0 0 6px;}
+  .card .lead{color:var(--mist);font-size:14px;margin:0 0 24px;line-height:1.6;}
 
-  .switch-wrap{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:22px;
-    transition:opacity .45s ease, transform .45s ease;
+  .tabs{display:flex;background:rgba(7,7,11,.5);border-radius:12px;padding:4px;margin-bottom:22px;}
+  .tab{
+    flex:1;padding:10px;border:none;border-radius:9px;cursor:pointer;
+    background:transparent;color:var(--mist);font-family:inherit;font-size:14px;font-weight:600;
+    transition:all .2s ease;
   }
-  body.lights-on .switch-wrap{
-    opacity:0;
-    transform:translateY(-14px) scale(.85);
-  }
+  .tab.active{background:var(--amber);color:var(--ink);}
+  .tab:not(.active):hover{color:var(--ivory);}
 
-  .switch{
-    appearance:none;
-    border:1.5px solid #34394a;
-    width:92px;
-    height:148px;
-    border-radius:46px;
-    background:#262a36;
-    box-shadow:
-      inset 0 3px 6px rgba(0,0,0,.6),
-      inset 0 -2px 4px rgba(255,255,255,.05),
-      0 18px 40px rgba(0,0,0,.55),
-      0 0 0 8px rgba(232,163,61,.06);
-    padding:10px;
-    cursor:pointer;
-    position:relative;
-    transition:background .5s ease, box-shadow .5s ease, border-color .5s ease;
-    animation:idlePulse 2.6s ease-in-out infinite;
-  }
-  @keyframes idlePulse{
-    0%,100%{ box-shadow:
-      inset 0 3px 6px rgba(0,0,0,.6),
-      inset 0 -2px 4px rgba(255,255,255,.05),
-      0 18px 40px rgba(0,0,0,.55),
-      0 0 0 8px rgba(232,163,61,.05); }
-    50%{ box-shadow:
-      inset 0 3px 6px rgba(0,0,0,.6),
-      inset 0 -2px 4px rgba(255,255,255,.05),
-      0 18px 46px rgba(0,0,0,.55),
-      0 0 0 14px rgba(232,163,61,.12); }
-  }
-  .switch[aria-pressed="true"]{
-    animation:none;
-  }
-  .switch:focus-visible{
-    outline:2px solid var(--amber);
-    outline-offset:4px;
-  }
-  .switch[aria-pressed="true"]{
-    background:#20242c;
-    box-shadow:
-      inset 0 3px 6px rgba(0,0,0,.5),
-      0 0 34px 6px rgba(232,163,61,.55),
-      0 18px 40px rgba(0,0,0,.5);
-  }
-
-  .switch-knob{
-    display:block;
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:var(--slate);
-    box-shadow:0 4px 10px rgba(0,0,0,.5);
-    transform:translateY(64px);
-    transition:transform .5s cubic-bezier(.34,1.56,.64,1), background .5s ease, box-shadow .5s ease;
-  }
-  .switch[aria-pressed="true"] .switch-knob{
-    transform:translateY(0);
-    background:var(--amber);
-    box-shadow:0 4px 16px rgba(232,163,61,.7);
-  }
-
-  .switch-caption{
-    margin:0;
-    font-size:14px;
-    letter-spacing:.02em;
-    color:#8b95a8;
-    transition:color .5s ease;
-  }
-  .switch[aria-pressed="true"] ~ .switch-caption{
-    color:var(--amber);
-  }
-
-  /* ---------- Efek cahaya menyala ---------- */
-  .bloom{
-    position:fixed;
-    inset:0;
-    z-index:6;
-    pointer-events:none;
-    opacity:0;
-    background:radial-gradient(circle at var(--bx,50%) var(--by,50%), rgba(232,163,61,.85) 0%, rgba(232,163,61,.35) 18%, rgba(18,35,59,0) 55%);
-  }
-  body.lights-on .bloom{
-    animation:bloomExpand var(--dur) ease-out forwards;
-  }
-  @keyframes bloomExpand{
-    0%{opacity:.95; transform:scale(.05);}
-    60%{opacity:.6;}
-    100%{opacity:0; transform:scale(9);}
-  }
-
-  /* ---------- Panggung aplikasi (kondisi menyala) ---------- */
-  .app-stage{
-    position:fixed;
-    inset:0;
-    z-index:2;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:28px;
-    padding:24px;
-    opacity:0;
-    transform:translateY(14px);
-    transition:opacity .85s ease .18s, transform .85s ease .18s;
-    pointer-events:none;
-  }
-  body.lights-on .app-stage{
-    opacity:1;
-    transform:translateY(0);
-    pointer-events:auto;
-  }
-
-  .brand{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-    text-align:center;
-  }
-  .brand-mark{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:34px;
-    letter-spacing:.01em;
-    color:var(--ivory);
-  }
-  .brand-tag{
-    font-size:13px;
-    color:#9aa7b8;
-  }
-
-  /* ---------- Kartu flip ---------- */
-  .card-perspective{
-    perspective:1600px;
-    width:100%;
-    max-width:380px;
-  }
-  .card-flip{
-    position:relative;
-    width:100%;
-    min-height:462px;
-    transform-style:preserve-3d;
-    transition:transform .8s cubic-bezier(.4,.1,.2,1);
-  }
-  .card-flip.is-flipped{
-    transform:rotateY(180deg);
-  }
-
-  .card-face{
-    position:absolute;
-    inset:0;
-    backface-visibility:hidden;
-    background:var(--ivory);
-    border-radius:var(--radius);
-    padding:38px 30px;
-    box-shadow:0 24px 60px rgba(0,0,0,.45);
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    color:var(--ink);
-  }
-  .card-back{
-    transform:rotateY(180deg);
-  }
-
-  .card-face h1{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size:24px;
-    margin:0 0 2px;
-  }
-  .card-face p.lead{
-    margin:0;
-    font-size:13.5px;
-    color:var(--slate);
-  }
-
-  .field{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .field label{
-    font-size:12.5px;
-    font-weight:500;
-    color:var(--slate);
-  }
-  .field-input{
-    position:relative;
-    display:flex;
-    align-items:center;
-  }
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--mist);}
   .field input{
-    width:100%;
-    font-family:inherit;
-    font-size:14.5px;
-    padding:12px 14px;
-    border-radius:12px;
-    border:1.5px solid #e1dcce;
-    background:#fffdfa;
-    color:var(--ink);
+    width:100%;padding:12px 14px;border-radius:12px;font-family:inherit;font-size:14.5px;
+    background:rgba(7,7,11,.45);border:1.5px solid rgba(245,241,232,.15);color:var(--ivory);
     transition:border-color .2s ease, box-shadow .2s ease;
   }
-  .field input::placeholder{color:#b8b2a2;}
-  .field input:focus{
-    outline:none;
-    border-color:var(--amber);
-    box-shadow:0 0 0 4px rgba(232,163,61,.18);
-  }
-  .field.invalid input{
-    border-color:var(--danger);
-    animation:shake .35s ease;
-  }
-  .field.invalid .field-error{display:block;}
-  .field-error{
-    display:none;
-    font-size:12px;
-    color:var(--danger);
-  }
-  @keyframes shake{
-    0%,100%{transform:translateX(0);}
-    25%{transform:translateX(-5px);}
-    75%{transform:translateX(5px);}
-  }
-
-  .toggle-vis{
-    position:absolute;
-    right:10px;
-    background:none;
-    border:none;
-    cursor:pointer;
-    padding:4px;
-    color:var(--slate);
-    font-size:12px;
-    font-weight:500;
-  }
-  .toggle-vis:hover{color:var(--amber-dim);}
+  .field input::placeholder{color:#5c6474;}
+  .field input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(232,163,61,.15);}
+  .field.invalid input{border-color:var(--danger);animation:shake .35s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .hint{font-size:12px;color:var(--mist);line-height:1.5;margin-top:4px;}
 
   .btn-primary{
-    margin-top:4px;
-    border:none;
-    border-radius:12px;
-    padding:13px 18px;
-    background:var(--navy);
-    color:var(--ivory);
-    font-family:inherit;
-    font-size:14.5px;
-    font-weight:600;
-    cursor:pointer;
-    box-shadow:0 10px 22px rgba(18,35,59,.35);
+    width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
+    background:var(--amber);color:var(--ink);font-family:inherit;font-size:15px;font-weight:700;
+    box-shadow:0 10px 22px rgba(232,163,61,.35);
     transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    margin-top:6px;
   }
-  .btn-primary:hover{
-    transform:translateY(-2px);
-    box-shadow:0 14px 28px rgba(18,35,59,.45);
-    background:var(--navy-deep);
-  }
-  .btn-primary:active{
-    transform:translateY(0);
-    box-shadow:0 6px 14px rgba(18,35,59,.35);
-  }
+  .btn-primary:hover{transform:translateY(-2px);background:#f0ad4d;box-shadow:0 14px 28px rgba(232,163,61,.45);}
+  .btn-primary:disabled{opacity:.6;cursor:wait;transform:none;}
 
-  .switch-mode{
-    text-align:center;
-    font-size:13.5px;
-    color:var(--slate);
-    margin-top:2px;
+  .error-box{
+    display:none;background:rgba(214,69,69,.14);border:1px solid rgba(214,69,69,.4);
+    color:#ffb4b4;font-size:13.5px;padding:10px 14px;border-radius:10px;margin-bottom:14px;line-height:1.5;
   }
-  .switch-mode button{
-    background:none;
-    border:none;
-    padding:0;
-    font:inherit;
-    font-weight:600;
-    color:var(--amber-dim);
-    cursor:pointer;
-    text-decoration:underline;
-    text-underline-offset:3px;
-  }
-  .switch-mode button:hover{color:var(--amber);}
+  .error-box.show{display:block;}
 
-  .toast{
-    position:fixed;
-    left:50%;
-    bottom:32px;
-    transform:translate(-50%, 16px);
-    background:var(--ink);
-    color:var(--ivory);
-    padding:12px 20px;
-    border-radius:12px;
-    font-size:13.5px;
-    box-shadow:0 12px 28px rgba(0,0,0,.4);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .3s ease, transform .3s ease;
-    z-index:10;
-  }
-  .toast.show{
-    opacity:1;
-    transform:translate(-50%, 0);
-  }
+  .switch-note{display:none;font-size:12.5px;color:var(--mist);margin:-4px 0 14px;line-height:1.55;}
+  .switch-note.show{display:block;}
 
-  @media (max-width:420px){
-    .card-face{padding:30px 22px;}
-    .card-flip{min-height:498px;}
+  .back{
+    position:relative;z-index:1;margin-top:22px;text-align:center;width:100%;
   }
+  .back a{color:var(--mist);font-size:13.5px;text-decoration:none;}
+  .back a:hover{color:var(--amber);}
 
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:.001s !important; transition-duration:.001s !important;}
+  .foot-note{
+    position:relative;z-index:1;margin-top:14px;text-align:center;
+    font-size:12px;color:#6b7484;line-height:1.6;max-width:420px;
   }
 </style>
 </head>
 <body>
+  <div class="glow glow-1"></div><div class="glow glow-2"></div><div class="glow glow-3"></div>
 
-  <div class="power-stage" id="powerStage">
-    <div class="switch-wrap">
-      <button class="switch" id="switchBtn" type="button" aria-pressed="false" aria-label="Nyalakan aplikasi">
-        <span class="switch-knob"></span>
-      </button>
-      <p class="switch-caption">Sentuh saklar untuk masuk</p>
-    </div>
-  </div>
+  <main style="display:flex;flex-direction:column;align-items:center;">
+    <div class="card">
+      <a class="brand" href="index.html">
+        <span class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v4M15 2v4M7 8h10l-1 6a4 4 0 0 1-8 0L7 8Z"/><path d="M12 18v4"/></svg>
+        </span>
+        <span class="brand-name">Saklar</span>
+      </a>
 
-  <div class="bloom" id="bloom" aria-hidden="true"></div>
+      <h1 id="formTitle">Selamat datang kembali</h1>
+      <p class="lead">Masuk untuk mengelola sambungan agen AI customer service-mu.</p>
 
-  <main class="app-stage" id="appStage">
-    <div class="brand">
-      <span class="brand-mark">Saklar</span>
-      <span class="brand-tag">akun kamu, dalam satu ketukan</span>
-    </div>
-
-    <div class="card-perspective">
-      <div class="card-flip" id="cardFlip">
-
-        <!-- LOGIN -->
-        <section class="card-face card-front" aria-hidden="false">
-          <div>
-            <h1>Masuk ke akun</h1>
-            <p class="lead">Senang bertemu lagi. Isi datamu untuk melanjutkan.</p>
-          </div>
-          <form id="loginForm" novalidate>
-            <div class="field" id="loginEmailField">
-              <label for="loginEmail">Email</label>
-              <div class="field-input">
-                <input type="email" id="loginEmail" placeholder="nama@email.com" autocomplete="email">
-              </div>
-              <span class="field-error">Masukkan email yang valid.</span>
-            </div>
-            <div class="field" id="loginPassField" style="margin-top:14px;">
-              <label for="loginPass">Kata sandi</label>
-              <div class="field-input">
-                <input type="password" id="loginPass" placeholder="Kata sandi kamu" autocomplete="current-password">
-                <button type="button" class="toggle-vis" data-target="loginPass">Lihat</button>
-              </div>
-              <span class="field-error">Kata sandi tidak boleh kosong.</span>
-            </div>
-            <button class="btn-primary" type="submit" style="width:100%;margin-top:20px;">Masuk</button>
-          </form>
-          <p class="switch-mode">Belum punya akun? <button type="button" id="goRegister">Daftar</button></p>
-        </section>
-
-        <!-- REGISTRASI -->
-        <section class="card-face card-back" aria-hidden="true">
-          <div>
-            <h1>Buat akun baru</h1>
-            <p class="lead">Butuh kurang dari semenit untuk mulai.</p>
-          </div>
-          <form id="registerForm" novalidate>
-            <div class="field" id="regNameField">
-              <label for="regName">Nama lengkap</label>
-              <div class="field-input">
-                <input type="text" id="regName" placeholder="Nama kamu" autocomplete="name">
-              </div>
-              <span class="field-error">Nama tidak boleh kosong.</span>
-            </div>
-            <div class="field" id="regEmailField" style="margin-top:14px;">
-              <label for="regEmail">Email</label>
-              <div class="field-input">
-                <input type="email" id="regEmail" placeholder="nama@email.com" autocomplete="email">
-              </div>
-              <span class="field-error">Masukkan email yang valid.</span>
-            </div>
-            <div class="field" id="regPassField" style="margin-top:14px;">
-              <label for="regPass">Kata sandi</label>
-              <div class="field-input">
-                <input type="password" id="regPass" placeholder="Minimal 8 karakter" autocomplete="new-password">
-                <button type="button" class="toggle-vis" data-target="regPass">Lihat</button>
-              </div>
-              <span class="field-error">Kata sandi minimal 8 karakter.</span>
-            </div>
-            <button class="btn-primary" type="submit" style="width:100%;margin-top:20px;">Daftar</button>
-          </form>
-          <p class="switch-mode">Sudah punya akun? <button type="button" id="goLogin">Masuk</button></p>
-        </section>
-
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab active" id="tabLogin" role="tab">Masuk</button>
+        <button type="button" class="tab" id="tabRegister" role="tab">Daftar</button>
       </div>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <form id="authForm" novalidate>
+        <div class="field" id="fieldName" style="display:none;">
+          <label for="inputName">Nama</label>
+          <input type="text" id="inputName" placeholder="Nama kamu" autocomplete="name">
+        </div>
+        <div class="field" id="fieldEmail">
+          <label for="inputEmail">Email</label>
+          <input type="email" id="inputEmail" placeholder="nama@email.com" autocomplete="email" required>
+        </div>
+        <div class="field" id="fieldPass">
+          <label for="inputPass">Password</label>
+          <input type="password" id="inputPass" placeholder="Minimal 6 karakter" autocomplete="current-password" required>
+        </div>
+        <p class="switch-note" id="noteRegister">Password disimpan sebagai hash di Google Sheets (SHA-256), bukan teks biasa.</p>
+
+        <button type="submit" class="btn-primary" id="submitBtn">Masuk ke Saklar</button>
+      </form>
     </div>
+
+    <nav class="back"><a href="index.html">← Kembali ke halaman utama</a></nav>
+    <p class="foot-note">Saklar menghubungkan agen AI kamu ke Telegram &amp; WhatsApp lewat Google Apps Script — tanpa server tambahan.</p>
   </main>
 
-  <div class="toast" id="toast"></div>
-
+<script src="app-config.js"></script>
 <script>
-  const switchBtn = document.getElementById('switchBtn');
-  const bloom = document.getElementById('bloom');
-  const body = document.body;
-  let lit = false;
+  (function () {
+    var tabLogin = document.getElementById('tabLogin');
+    var tabRegister = document.getElementById('tabRegister');
+    var fieldName = document.getElementById('fieldName');
+    var inputName = document.getElementById('inputName');
+    var formTitle = document.getElementById('formTitle');
+    var noteRegister = document.getElementById('noteRegister');
+    var submitBtn = document.getElementById('submitBtn');
+    var errorBox = document.getElementById('errorBox');
+    var mode = 'login';
 
-  switchBtn.addEventListener('click', () => {
-    if (lit) return;
-    lit = true;
-    const rect = switchBtn.getBoundingClientRect();
-    const bx = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
-    const by = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
-    bloom.style.setProperty('--bx', bx + '%');
-    bloom.style.setProperty('--by', by + '%');
-    switchBtn.setAttribute('aria-pressed', 'true');
-    body.classList.add('lights-on');
-    setTimeout(() => {
-      document.getElementById('loginEmail').focus();
-    }, 850);
-  });
+    // Sudah login? langsung ke dashboard
+    if (window.saklarSession.get()) {
+      window.location.replace('dashboard.html');
+      return;
+    }
 
-  // ---- Flip kartu login <-> registrasi ----
-  const cardFlip = document.getElementById('cardFlip');
-  const frontFace = document.querySelector('.card-front');
-  const backFace = document.querySelector('.card-back');
+    function setMode(m) {
+      mode = m;
+      var isReg = m === 'register';
+      tabLogin.classList.toggle('active', !isReg);
+      tabRegister.classList.toggle('active', isReg);
+      fieldName.style.display = isReg ? 'flex' : 'none';
+      noteRegister.classList.toggle('show', isReg);
+      formTitle.textContent = isReg ? 'Buat akun Saklar' : 'Selamat datang kembali';
+      submitBtn.textContent = isReg ? 'Daftar & masuk' : 'Masuk ke Saklar';
+      inputName.required = isReg;
+      hideError();
+    }
 
-  function flipTo(mode){
-    const flipped = mode === 'register';
-    cardFlip.classList.toggle('is-flipped', flipped);
-    frontFace.setAttribute('aria-hidden', String(flipped));
-    backFace.setAttribute('aria-hidden', String(!flipped));
-    setTimeout(() => {
-      const target = flipped ? document.getElementById('regName') : document.getElementById('loginEmail');
-      target && target.focus();
-    }, 420);
-  }
-  document.getElementById('goRegister').addEventListener('click', () => flipTo('register'));
-  document.getElementById('goLogin').addEventListener('click', () => flipTo('login'));
+    tabLogin.addEventListener('click', function () { setMode('login'); });
+    tabRegister.addEventListener('click', function () { setMode('register'); });
 
-  // ---- Lihat / sembunyikan kata sandi ----
-  document.querySelectorAll('.toggle-vis').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const input = document.getElementById(btn.dataset.target);
-      const showing = input.type === 'text';
-      input.type = showing ? 'password' : 'text';
-      btn.textContent = showing ? 'Lihat' : 'Sembunyikan';
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.add('show');
+    }
+    function hideError() { errorBox.classList.remove('show'); }
+
+    function apiReady(action, payload) {
+      return new Promise(function (resolve, reject) {
+        window.saklarReady(function () {
+          window.saklarApi(action, payload).then(resolve, reject);
+        });
+      });
+    }
+
+    document.getElementById('authForm').addEventListener('submit', async function (ev) {
+      ev.preventDefault();
+      hideError();
+
+      var email = document.getElementById('inputEmail').value.trim();
+      var pass = document.getElementById('inputPass').value;
+
+      if (!email || email.indexOf('@') < 1) { showError('Masukkan email yang valid.'); return; }
+      if (pass.length < 6) { showError('Password minimal 6 karakter.'); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = mode === 'login' ? 'Memeriksa…' : 'Mendaftarkan…';
+
+      try {
+        var payload = { email: email, password: pass };
+        if (mode === 'register') payload.name = inputName.value.trim();
+
+        var data = await apiReady(mode === 'login' ? 'login' : 'register', payload);
+        window.saklarSession.set(data);
+        window.location.replace('dashboard.html');
+      } catch (err) {
+        showError(err.message || 'Gagal terhubung ke server. Buka setup.html bila backend belum tersambung.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = mode === 'login' ? 'Masuk ke Saklar' : 'Daftar & masuk';
+      }
     });
-  });
-
-  // ---- Toast ----
-  const toast = document.getElementById('toast');
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2600);
-  }
-
-  function markField(id, valid){
-    const field = document.getElementById(id);
-    field.classList.toggle('invalid', !valid);
-  }
-
-  // ---- Validasi form login (stub, siap disambungkan ke Apps Script) ----
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail');
-    const pass = document.getElementById('loginPass');
-    const emailValid = /\S+@\S+\.\S+/.test(email.value);
-    const passValid = pass.value.length > 0;
-    markField('loginEmailField', emailValid);
-    markField('loginPassField', passValid);
-    if (emailValid && passValid) {
-      showToast('Form valid — siap dikirim ke backend Apps Script.');
-    }
-  });
-
-  // ---- Validasi form registrasi (stub) ----
-  document.getElementById('registerForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('regName');
-    const email = document.getElementById('regEmail');
-    const pass = document.getElementById('regPass');
-    const nameValid = name.value.trim().length > 0;
-    const emailValid = /\S+@\S+\.\S+/.test(email.value);
-    const passValid = pass.value.length >= 8;
-    markField('regNameField', nameValid);
-    markField('regEmailField', emailValid);
-    markField('regPassField', passValid);
-    if (nameValid && emailValid && passValid) {
-      showToast('Form valid — siap dikirim ke backend Apps Script.');
-    }
-  });
+  })();
 </script>
 </body>
-  </html>
+</html>

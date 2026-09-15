@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Saklar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#07070b; --navy:#12233b; --navy-deep:#0c1a2e;
+    --ivory:#f5f1e8; --amber:#e8a33d; --amber-soft:rgba(232,163,61,.14);
+    --teal:#2fb6a6; --violet:#8b7cf6;
+    --slate:#5b6472; --mist:#9aa7b8; --danger:#d64545; --ok:#3ecf8e;
+    --card:rgba(245,241,232,.045); --line:rgba(245,241,232,.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 55%,#08111f 100%);
+    background-attachment:fixed;
+    color:var(--ivory);min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ===== TOPBAR ===== */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(7,7,11,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:1080px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+  .brand-logo{
+    width:32px;height:32px;border-radius:9px;background:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 14px rgba(232,163,61,.4);
+  }
+  .brand-logo svg{width:17px;height:17px;color:var(--ink);}
+  .brand-name{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
+  .user-box{display:flex;align-items:center;gap:12px;}
+  .user-name{font-size:14px;color:var(--mist);}
+  .btn-logout{
+    padding:8px 16px;border-radius:10px;border:1.5px solid var(--line);
+    background:transparent;color:var(--ivory);font-size:13.5px;font-weight:600;cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-logout:hover{border-color:var(--amber);background:var(--amber-soft);}
+
+  /* ===== LAYOUT ===== */
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 24px 80px;}
+  .page-head h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(24px,4vw,32px);margin:0 0 6px;}
+  .page-head p{color:var(--mist);font-size:15px;margin:0 0 26px;line-height:1.6;}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px;}
+  .tab-btn{
+    padding:11px 18px;border-radius:12px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--mist);font-size:14px;font-weight:600;cursor:pointer;
+    display:flex;align-items:center;gap:8px;transition:all .2s ease;
+  }
+  .tab-btn .dot{width:8px;height:8px;border-radius:50%;background:#4a5261;transition:background .2s ease;}
+  .tab-btn .dot.on{background:var(--ok);box-shadow:0 0 8px rgba(62,207,142,.7);}
+  .tab-btn:hover{color:var(--ivory);border-color:rgba(245,241,232,.3);}
+  .tab-btn.active{background:var(--amber);border-color:var(--amber);color:var(--ink);}
+  .tab-btn.active .dot{background:rgba(7,7,11,.35);box-shadow:none;}
+
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:28px;margin-bottom:20px;
+  }
+  .card h2{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:10px;}
+  .card h2 .chip{font-family:'IBM Plex Sans',sans-serif;}
+  .card .desc{color:var(--mist);font-size:13.5px;margin:0 0 20px;line-height:1.6;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){.grid-2{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--mist);}
+  .field input,.field select,.field textarea{
+    width:100%;padding:12px 14px;border-radius:12px;font-family:inherit;font-size:14px;
+    background:rgba(7,7,11,.45);border:1.5px solid var(--line);color:var(--ivory);
+    transition:border-color .2s ease, box-shadow .2s ease;resize:vertical;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:#5c6474;}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(232,163,61,.14);
+  }
+  .field select option{background:var(--navy-deep);color:var(--ivory);}
+  .field .hint{font-size:12px;color:#7c8697;line-height:1.55;}
+
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.02em;
+  }
+  .chip.ok{background:rgba(62,207,142,.15);color:var(--ok);border:1px solid rgba(62,207,142,.4);}
+  .chip.off{background:rgba(154,167,184,.12);color:var(--mist);border:1px solid rgba(154,167,184,.3);}
+  .chip.warn{background:var(--amber-soft);color:var(--amber);border:1px solid rgba(232,163,61,.4);}
+
+  /* toggle switch */
+  .switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0 6px;}
+  .switch-row .lbl b{display:block;font-size:14.5px;}
+  .switch-row .lbl span{font-size:12.5px;color:var(--mist);line-height:1.5;}
+  .switch{position:relative;width:46px;height:26px;flex-shrink:0;cursor:pointer;}
+  .switch input{opacity:0;width:0;height:0;}
+  .switch .track{
+    position:absolute;inset:0;border-radius:999px;background:#3a4353;transition:background .2s ease;
+  }
+  .switch .track::after{
+    content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+    background:#fff;transition:transform .2s ease;
+  }
+  .switch input:checked + .track{background:var(--ok);}
+  .switch input:checked + .track::after{transform:translateX(20px);}
+
+  .btn{
+    padding:12px 22px;border:none;border-radius:12px;cursor:pointer;
+    background:var(--amber);color:var(--ink);font-size:14px;font-weight:700;
+    box-shadow:0 8px 18px rgba(232,163,61,.3);
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn:hover{transform:translateY(-2px);background:#f0ad4d;}
+  .btn:disabled{opacity:.6;cursor:wait;transform:none;}
+  .btn.ghost{
+    background:transparent;color:var(--ivory);border:1.5px solid var(--line);box-shadow:none;
+  }
+  .btn.ghost:hover{border-color:var(--amber);background:var(--amber-soft);}
+
+  .readonly-url{
+    display:flex;gap:8px;align-items:stretch;
+  }
+  .readonly-url input{
+    flex:1;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--mist);
+    background:rgba(7,7,11,.6) !important;
+  }
+  .readonly-url input:focus{border-color:var(--line);box-shadow:none;}
+
+  .status-box{
+    background:rgba(7,7,11,.4);border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;font-size:13px;color:var(--mist);line-height:1.7;margin-top:14px;
+  }
+  .status-box b{color:var(--ivory);}
+  .status-box .err{color:#ff9f9f;}
+
+  .steps{margin:0;padding-left:18px;color:var(--mist);font-size:13.5px;line-height:1.9;}
+  .steps code{
+    background:rgba(7,7,11,.5);padding:2px 7px;border-radius:6px;
+    font-size:12px;color:var(--amber);font-family:'IBM Plex Mono',monospace;
+  }
+
+  /* ===== UJI CHAT ===== */
+  .chat-window{
+    background:rgba(7,7,11,.5);border:1px solid var(--line);border-radius:18px;
+    min-height:320px;max-height:440px;overflow-y:auto;padding:20px;
+    display:flex;flex-direction:column;gap:12px;margin-bottom:14px;
+  }
+  .bubble{
+    max-width:78%;padding:11px 15px;border-radius:16px;font-size:14px;line-height:1.6;
+    white-space:pre-wrap;word-break:break-word;
+  }
+  .bubble.user{
+    align-self:flex-end;background:var(--amber);color:var(--ink);
+    border-bottom-right-radius:4px;
+  }
+  .bubble.bot{
+    align-self:flex-start;background:rgba(245,241,232,.08);color:var(--ivory);
+    border:1px solid var(--line);border-bottom-left-radius:4px;
+  }
+  .bubble.typing{color:var(--mist);font-style:italic;}
+  .chat-input-row{display:flex;gap:10px;}
+  .chat-input-row input{
+    flex:1;padding:13px 16px;border-radius:12px;font-family:inherit;font-size:14px;
+    background:rgba(7,7,11,.45);border:1.5px solid var(--line);color:var(--ivory);
+  }
+  .chat-input-row input:focus{outline:none;border-color:var(--amber);}
+  .empty-chat{
+    margin:auto;text-align:center;color:var(--mist);font-size:13.5px;line-height:1.7;
+  }
+
+  /* ===== LOG ===== */
+  .log-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .log-table th{
+    text-align:left;padding:10px 12px;color:var(--mist);font-size:11.5px;
+    text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line);
+  }
+  .log-table td{
+    padding:10px 12px;border-bottom:1px solid rgba(245,241,232,.06);
+    color:var(--ivory);vertical-align:top;line-height:1.5;
+  }
+  .log-table td .msg{word-break:break-word;white-space:pre-wrap;}
+  .log-table td.dir-in{color:var(--teal);font-weight:600;}
+  .log-table td.dir-out{color:var(--amber);font-weight:600;}
+  .log-empty{color:var(--mist);text-align:center;padding:30px 0;font-size:13.5px;}
+
+  /* ===== TOAST ===== */
+  .toast{
+    position:fixed;left:50%;bottom:32px;transform:translate(-50%,16px);
+    background:var(--ink);color:var(--ivory);padding:12px 20px;border-radius:12px;
+    font-size:13.5px;box-shadow:0 12px 28px rgba(0,0,0,.4);z-index:200;
+    opacity:0;pointer-events:none;transition:opacity .3s ease, transform .3s ease;
+    max-width:calc(100vw - 40px);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+  .toast.error{background:#3d1515;border:1px solid rgba(214,69,69,.5);color:#ffb4b4;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001s !important;transition-duration:.001s !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v4M15 2v4M7 8h10l-1 6a4 4 0 0 1-8 0L7 8Z"/><path d="M12 18v4"/></svg>
+      </span>
+      <span class="brand-name">Saklar</span>
+    </a>
+    <div class="user-box">
+      <span class="user-name" id="userName">…</span>
+      <a href="setup.html" style="color:var(--mist);font-size:13.5px;text-decoration:none;">Setup</a>
+      <button class="btn-logout" id="btnLogout">Keluar</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <h1>Papan kendali sambungan</h1>
+    <p>Input kunci AI dan token kanal di sini — Google Apps Script yang mengurus sisanya: pesan masuk dari pelanggan dijawab otomatis oleh agen AI.</p>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="ai">
+      <span class="dot" id="dotAi"></span> Koneksi AI
+    </button>
+    <button class="tab-btn" data-tab="telegram">
+      <span class="dot" id="dotTg"></span> Telegram
+    </button>
+    <button class="tab-btn" data-tab="whatsapp">
+      <span class="dot" id="dotWa"></span> WhatsApp
+    </button>
+    <button class="tab-btn" data-tab="test">Uji Chat</button>
+    <button class="tab-btn" data-tab="logs">Log Chat</button>
+  </nav>
+
+  <!-- ============ PANEL: AI ============ -->
+  <section class="panel active" id="panel-ai">
+    <div class="card">
+      <h2>Model AI <span class="chip" id="chipAi"></span></h2>
+      <p class="desc">Agen AI inilah yang jadi "customer service". Mendukung API kompatibel OpenAI (OpenAI, Groq, OpenRouter, dll.) dan Google Gemini.</p>
+      <div class="grid-2">
+        <div class="field">
+          <label for="aiProvider">Penyedia AI</label>
+          <select id="aiProvider">
+            <option value="openai">OpenAI / kompatibel (Groq, OpenRouter, dll.)</option>
+            <option value="gemini">Google Gemini</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="aiModel">Nama model <span style="font-weight:400">(opsional)</span></label>
+          <input type="text" id="aiModel" placeholder="gpt-4o-mini / gemini-1.5-flash">
+        </div>
+        <div class="field full">
+          <label for="aiKey">API key</label>
+          <input type="password" id="aiKey" placeholder="" autocomplete="off">
+          <span class="hint" id="aiKeyHint">Kosongkan jika sudah tersimpan dan tidak ingin mengganti.</span>
+        </div>
+        <div class="field full" id="fieldBaseUrl">
+          <label for="aiBaseUrl">Base URL API <span style="font-weight:400">(opsional, untuk penyedia kompatibel OpenAI)</span></label>
+          <input type="text" id="aiBaseUrl" placeholder="https://api.openai.com/v1">
+        </div>
+        <div class="field full">
+          <label for="aiPrompt">Instruksi kepribadian agen (system prompt)</label>
+          <textarea id="aiPrompt" rows="4" placeholder="Kamu adalah customer service ramah untuk toko XYZ…"></textarea>
+          <span class="hint">Kosongkan untuk memakai default: ramah, singkat, menjawab dalam bahasa pengirim.</span>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <button class="btn" id="btnSaveAi">Simpan Koneksi AI</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL: TELEGRAM ============ -->
+  <section class="panel" id="panel-telegram">
+    <div class="card">
+      <h2>Telegram Bot <span class="chip" id="chipTg"></span></h2>
+      <p class="desc">Buat bot lewat <b>@BotFather</b> di Telegram, salin token-nya ke sini. Saklar otomatis memasang webhook saat diaktifkan.</p>
+      <div class="grid-2">
+        <div class="field full">
+          <label for="tgToken">Bot token dari @BotFather</label>
+          <input type="password" id="tgToken" placeholder="" autocomplete="off">
+          <span class="hint">Kosongkan jika sudah tersimpan dan tidak ingin mengganti.</span>
+        </div>
+        <div class="field full">
+          <label>URL webhook (otomatis, salin bila perlu)</label>
+          <div class="readonly-url">
+            <input type="text" id="tgWebhookUrl" readonly>
+            <button class="btn ghost" type="button" data-copy="tgWebhookUrl">Salin</button>
+          </div>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="lbl">
+          <b>Aktifkan saklar Telegram</b>
+          <span>Saat dinyalakan, webhook dipasang ke backend dan bot langsung menjawab pelanggan.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="tgEnabled">
+          <span class="track"></span>
+        </label>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="btn" id="btnSaveTg">Simpan &amp; Pasang Webhook</button>
+      </div>
+      <div class="status-box" id="tgStatus">Memuat status…</div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL: WHATSAPP ============ -->
+  <section class="panel" id="panel-whatsapp">
+    <div class="card">
+      <h2>WhatsApp Cloud API <span class="chip" id="chipWa"></span></h2>
+      <p class="desc">Butuh <b>Meta for Developers</b>: buat app → tambahkan produk <b>WhatsApp</b> → ambil Phone number ID dan token.</p>
+      <div class="grid-2">
+        <div class="field">
+          <label for="waPhoneId">Phone number ID</label>
+          <input type="text" id="waPhoneId" placeholder="1234567890">
+        </div>
+        <div class="field">
+          <label for="waVerify">Verify token (bebas, samakan di Meta)</label>
+          <input type="text" id="waVerify" placeholder="saklar-rahasia-123">
+        </div>
+        <div class="field full">
+          <label for="waToken">Access token (permanent / system user token)</label>
+          <input type="password" id="waToken" placeholder="" autocomplete="off">
+          <span class="hint">Kosongkan jika sudah tersimpan dan tidak ingin mengganti.</span>
+        </div>
+        <div class="field full">
+          <label>Callback URL untuk Meta</label>
+          <div class="readonly-url">
+            <input type="text" id="waWebhookUrl" readonly>
+            <button class="btn ghost" type="button" data-copy="waWebhookUrl">Salin</button>
+          </div>
+          <span class="hint">Tempel di Meta → WhatsApp → Configuration → Webhook, lalu klik <b>Verify and save</b>.</span>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="lbl">
+          <b>Aktifkan saklar WhatsApp</b>
+          <span>Saat dinyalakan, backend berlangganan pesan masuk nomor WhatsApp-mu.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="waEnabled">
+          <span class="track"></span>
+        </label>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="btn" id="btnSaveWa">Simpan &amp; Sambungkan</button>
+      </div>
+      <ol class="steps" style="margin-top:20px;">
+        <li>Isi Phone number ID, token, dan verify token, lalu simpan.</li>
+        <li>Salin callback URL di atas → tempel di Meta → klik <b>Verify and save</b> (backend membalas challenge otomatis).</li>
+        <li>Di halaman yang sama, klik <b>Subscribe to the field <code>messages</code></b>.</li>
+        <li>Nyalakan saklar, kirim pesan ke nomor WhatsApp-mu. Selesai! 🎉</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ PANEL: UJI CHAT ============ -->
+  <section class="panel" id="panel-test">
+    <div class="card">
+      <h2>Uji chat dengan agen AI</h2>
+      <p class="desc">Percakapan di sini memakai API key dan instruksi yang tersimpan — persis seperti saat nanti menjawab pelanggan. Tidak dikirim ke Telegram/WhatsApp.</p>
+      <div class="chat-window" id="chatWindow">
+        <div class="empty-chat" id="chatEmpty">
+          Belum ada pesan.<br>Tulis sesuatu di bawah untuk menguji agen AI-mu 👇
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Tulis pesan untuk agen AI…" maxlength="1000">
+        <button class="btn" id="btnSend">Kirim</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL: LOG ============ -->
+  <section class="panel" id="panel-logs">
+    <div class="card">
+      <h2>Log percakapan</h2>
+      <p class="desc">60 pesan terakhir dari semua kanal (Telegram, WhatsApp, uji chat). Sumber lengkapnya ada di tab <b>CHAT_LOG</b> Google Sheets-mu.</p>
+      <div style="margin-bottom:16px;">
+        <button class="btn ghost" id="btnRefreshLogs">⟳ Muat ulang</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="log-table">
+          <thead>
+            <tr><th style="width:150px">Waktu</th><th style="width:90px">Arah</th><th style="width:90px">Kanal</th><th>Pesan</th></tr>
+          </thead>
+          <tbody id="logBody">
+            <tr><td colspan="4" class="log-empty">Klik "Muat ulang" untuk menampilkan log.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="app-config.js"></script>
+<script>
+(function () {
+  var session = window.requireAuth();
+  if (!session) return;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { config: null, webhookStatus: {} };
+
+  // ---------- util ----------
+  function toast(msg, isError) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.toggle('error', !!isError);
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.classList.remove('show'); }, 3200);
+  }
+  function setBusy(btn, busy, busyLabel) {
+    if (busy) {
+      btn.dataset.label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = busyLabel || 'Menyimpan…';
+    } else {
+      btn.disabled = false;
+      if (btn.dataset.label) btn.textContent = btn.dataset.label;
+    }
+  }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ---------- tabs ----------
+  var tabs = document.querySelectorAll('.tab-btn');
+  tabs.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabs.forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      $('panel-' + btn.dataset.tab).classList.add('active');
+      if (btn.dataset.tab === 'logs') loadLogs();
+    });
+  });
+
+  // ---------- header ----------
+  $('userName').textContent = session.name || session.email;
+  $('btnLogout').addEventListener('click', function () {
+    window.saklarSession.clear();
+    window.location.replace('auth.html');
+  });
+
+  // ---------- webhook URLs ----------
+  var apiUrl = window.SAKLAR_CONFIG.API_URL || '';
+  $('tgWebhookUrl').value = apiUrl ? apiUrl + '?channel=telegram&uid=' + session.user_id : '(isi API_URL dulu di app-config.js)';
+  $('waWebhookUrl').value = apiUrl ? apiUrl + '?channel=whatsapp&uid=' + session.user_id : '(isi API_URL dulu di app-config.js)';
+
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var input = $(btn.dataset.copy);
+      var val = input.value;
+      if (!navigator.clipboard) {
+        input.removeAttribute('readonly');
+        input.select();
+        document.execCommand('copy');
+        input.setAttribute('readonly', 'readonly');
+        toast('URL disalin!');
+        return;
+      }
+      navigator.clipboard.writeText(val).then(function () { toast('URL disalin!'); });
+    });
+  });
+
+  // ---------- load config ----------
+  function apiReady(action, payload) {
+    return new Promise(function (resolve, reject) {
+      window.saklarReady(function () {
+        window.saklarApi(action, payload).then(resolve, reject);
+      });
+    });
+  }
+
+  async function loadConfig() {
+    try {
+      var data = await apiReady('getConfig', {
+        user_id: session.user_id,
+        session_token: session.session_token,
+      });
+      state.config = data.config || {};
+      state.webhookStatus = data.webhook_status || {};
+      render();
+    } catch (err) {
+      if (/sesi/i.test(err.message || '')) {
+        window.saklarSession.clear();
+        window.location.replace('auth.html');
+        return;
+      }
+      toast(err.message || 'Gagal memuat konfigurasi.', true);
+    }
+  }
+
+  function render() {
+    var c = state.config;
+    $('aiProvider').value = c.ai_provider || 'openai';
+    $('aiModel').value = c.ai_model || '';
+    $('aiBaseUrl').value = c.ai_base_url || '';
+    $('aiPrompt').value = c.ai_system_prompt || '';
+    $('aiKey').placeholder = c.has_ai_key ? '•••••••• tersimpan' : 'sk-… / AIza…';
+
+    $('tgToken').placeholder = c.has_telegram_token ? '•••••••• tersimpan' : '123456:ABC-DEF…';
+    $('tgEnabled').checked = !!c.telegram_enabled;
+
+    $('waPhoneId').value = c.wa_phone_number_id || '';
+    $('waVerify').value = c.wa_verify_token || '';
+    $('waToken').placeholder = c.has_wa_token ? '•••••••• tersimpan' : 'EAAG…';
+    $('waEnabled').checked = !!c.wa_enabled;
+
+    // chips
+    setChip('chipAi', c.has_ai_key ? ['ok', 'Terhubung'] : ['warn', 'Belum ada API key']);
+    setChip('chipTg', c.telegram_enabled ? ['ok', 'Aktif'] : (c.has_telegram_token ? ['warn', 'Token ada, belum aktif'] : ['off', 'Belum diisi']));
+    setChip('chipWa', c.wa_enabled ? ['ok', 'Aktif'] : (c.has_wa_token ? ['warn', 'Token ada, belum aktif'] : ['off', 'Belum diisi']));
+    $('dotAi').classList.toggle('on', !!c.has_ai_key);
+    $('dotTg').classList.toggle('on', !!c.telegram_enabled);
+    $('dotWa').classList.toggle('on', !!c.wa_enabled);
+
+    renderTgStatus();
+  }
+
+  function setChip(id, val) {
+    var el = $(id);
+    el.className = 'chip ' + val[0];
+    el.textContent = val[1];
+  }
+
+  function renderTgStatus() {
+    var box = $('tgStatus');
+    var st = state.webhookStatus && state.webhookStatus.telegram;
+    if (!st) {
+      box.innerHTML = 'Status webhook akan tampil setelah kamu menyimpan token bot.';
+      return;
+    }
+    if (!st.ok) {
+      box.innerHTML = '<span class="err">Telegram: ' + esc(st.error || 'gagal memeriksa') + '</span>';
+      return;
+    }
+    var info = st.info || {};
+    var parts = [];
+    parts.push(info.connected
+      ? '<b>Webhook terpasang</b>' + (info.url_matches ? ' dan alamatnya sesuai ✔' : ', namun <span class="err">alamat tidak sesuai</span> — tekan Simpan lagi.')
+      : '<b>Webhook belum terpasang</b> — nyalakan saklar lalu simpan.');
+    if (info.last_error) parts.push('<span class="err">Error terakhir: ' + esc(info.last_error) + '</span>');
+    if (typeof info.pending_update_count === 'number') parts.push('Pesan menunggu diproses: <b>' + info.pending_update_count + '</b>');
+    box.innerHTML = parts.join('<br>');
+  }
+
+  // ---------- save AI ----------
+  $('btnSaveAi').addEventListener('click', async function () {
+    var btn = this;
+    setBusy(btn, true, 'Menyimpan…');
+    try {
+      var res = await saveCommon({
+        ai_provider: $('aiProvider').value,
+        ai_model: $('aiModel').value.trim(),
+        ai_api_key: $('aiKey').value.trim(),
+        ai_base_url: $('aiBaseUrl').value.trim(),
+        ai_system_prompt: $('aiPrompt').value.trim(),
+        telegram_enabled: state.config.telegram_enabled || false,
+        wa_enabled: state.config.wa_enabled || false,
+      });
+      state.config = res.config;
+      state.webhookStatus = res.webhook_status || {};
+      $('aiKey').value = '';
+      render();
+      toast('Koneksi AI tersimpan ✔');
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      setBusy(btn, false);
+    }
+  });
+
+  // ---------- save Telegram ----------
+  $('btnSaveTg').addEventListener('click', async function () {
+    var btn = this;
+    setBusy(btn, true, 'Memasang webhook…');
+    try {
+      var res = await saveCommon({
+        telegram_bot_token: $('tgToken').value.trim(),
+        telegram_enabled: $('tgEnabled').checked,
+        ai_provider: state.config.ai_provider || 'openai',
+        wa_enabled: state.config.wa_enabled || false,
+      });
+      state.config = res.config;
+      state.webhookStatus = res.webhook_status || {};
+      $('tgToken').value = '';
+      render();
+      var ok = state.webhookStatus.telegram && state.webhookStatus.telegram.ok;
+      toast(ok ? 'Telegram tersimpan, webhook terpasang ✔' : 'Tersimpan, tapi periksa status webhook di bawah.', ok);
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      setBusy(btn, false);
+    }
+  });
+
+  // ---------- save WhatsApp ----------
+  $('btnSaveWa').addEventListener('click', async function () {
+    var btn = this;
+    setBusy(btn, true, 'Menyambungkan…');
+    try {
+      var res = await saveCommon({
+        wa_phone_number_id: $('waPhoneId').value.trim(),
+        wa_verify_token: $('waVerify').value.trim(),
+        wa_token: $('waToken').value.trim(),
+        wa_enabled: $('waEnabled').checked,
+        ai_provider: state.config.ai_provider || 'openai',
+        telegram_enabled: state.config.telegram_enabled || false,
+      });
+      state.config = res.config;
+      state.webhookStatus = res.webhook_status || {};
+      $('waToken').value = '';
+      render();
+      toast('WhatsApp tersimpan ✔ — lanjutkan verifikasi di Meta bila belum.');
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      setBusy(btn, false);
+    }
+  });
+
+  async function saveCommon(extra) {
+    var payload = Object.assign({
+      user_id: session.user_id,
+      session_token: session.session_token,
+    }, extra);
+    return await apiReady('saveConfig', payload);
+  }
+
+  // ---------- test chat ----------
+  var chatWindow = $('chatWindow');
+  var chatInput = $('chatInput');
+  var btnSend = $('btnSend');
+
+  function addBubble(text, who, isTyping) {
+    var empty = $('chatEmpty');
+    if (empty) empty.remove();
+    var div = document.createElement('div');
+    div.className = 'bubble ' + who + (isTyping ? ' typing' : '');
+    div.textContent = text;
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return div;
+  }
+
+  async function sendTest() {
+    var text = chatInput.value.trim();
+    if (!text) return;
+    chatInput.value = '';
+
+    if (state.config && !state.config.has_ai_key) {
+      addBubble('Isi dulu API key model AI di tab "Koneksi AI" ya.', 'bot');
+      return;
+    }
+
+    addBubble(text, 'user');
+    var typing = addBubble('mengetik…', 'bot', true);
+    btnSend.disabled = true;
+
+    try {
+      var data = await apiReady('testChat', {
+        user_id: session.user_id,
+        session_token: session.session_token,
+        message: text,
+      });
+      typing.textContent = data.reply;
+      typing.classList.remove('typing');
+    } catch (err) {
+      typing.textContent = '⚠️ ' + (err.message || 'Gagal menghubungi AI.');
+      typing.classList.remove('typing');
+    } finally {
+      btnSend.disabled = false;
+      chatInput.focus();
+    }
+  }
+
+  btnSend.addEventListener('click', sendTest);
+  chatInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); sendTest(); }
+  });
+
+  // ---------- logs ----------
+  var channelLabel = { telegram: 'Telegram', whatsapp: 'WhatsApp' };
+  function chanFromKey(key) {
+    var parts = String(key).split('|');
+    if (parts[1] === 'test') return 'Uji chat';
+    return channelLabel[parts[1]] || parts[1] || '-';
+  }
+  function fmtTime(ts) {
+    try {
+      var d = new Date(ts);
+      return d.toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return String(ts); }
+  }
+
+  async function loadLogs() {
+    var body = $('logBody');
+    body.innerHTML = '<tr><td colspan="4" class="log-empty">Memuat…</td></tr>';
+    try {
+      var data = await apiReady('getLogs', {
+        user_id: session.user_id,
+        session_token: session.session_token,
+      });
+      var logs = data.logs || [];
+      if (!logs.length) {
+        body.innerHTML = '<tr><td colspan="4" class="log-empty">Belum ada percakapan. Aktifkan Telegram/WhatsApp atau coba uji chat.</td></tr>';
+        return;
+      }
+      body.innerHTML = logs.map(function (l) {
+        var isIn = l.direction === 'in';
+        return '<tr>' +
+          '<td>' + esc(fmtTime(l.timestamp)) + '</td>' +
+          '<td class="' + (isIn ? 'dir-in' : 'dir-out') + '">' + (isIn ? '↘ Masuk' : '↗ Balasan') + '</td>' +
+          '<td>' + esc(chanFromKey(l.chat_key)) + '</td>' +
+          '<td><div class="msg">' + esc(l.message) + '</div></td>' +
+          '</tr>';
+      }).join('');
+    } catch (err) {
+      body.innerHTML = '<tr><td colspan="4" class="log-empty">' + esc(err.message) + '</td></tr>';
+    }
+  }
+  $('btnRefreshLogs').addEventListener('click', loadLogs);
+
+  // ---------- start ----------
+  loadConfig();
+})();
+</script>
+</body>
+</html>

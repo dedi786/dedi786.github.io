@@ -1,0 +1,15 @@
+{
+  "name": "saklar",
+  "version": "1.0.0",
+  "description": "Saklar — panel penghubung agen AI customer service ke Telegram & WhatsApp (backend: Google Apps Script, database: Google Sheets)",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "backend:login": "npx -y @google/clasp login",
+    "backend:setup": "sh ./scripts/clasp-setup.sh",
+    "backend:push": "sh ./scripts/clasp-setup.sh && npx -y @google/clasp push",
+    "backend:open": "sh ./scripts/clasp-setup.sh && npx -y @google/clasp open",
+    "backend:pull": "sh ./scripts/clasp-setup.sh && npx -y @google/clasp pull"
+  },
+  "dependencies": {}
+}

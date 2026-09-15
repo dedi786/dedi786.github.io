@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Saklar — Satu Saklar untuk Semua yang Ingin Kamu Sambungkan</title>
+<title>Saklar — Agen AI Customer Service untuk Telegram &amp; WhatsApp</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#07070b;
@@ -108,12 +108,10 @@
     border-bottom:1px solid rgba(255,255,255,.06);
   }
   .nav-mobile.open{display:flex;}
-  .nav-mobile a, .nav-mobile button.link-item{
+  .nav-mobile a{
     color:var(--mist);text-decoration:none;padding:12px 2px;
     font-size:15.5px;font-weight:500;
     border-bottom:1px solid rgba(255,255,255,.05);
-    background:none;border-left:none;border-right:none;border-top:none;
-    text-align:left;cursor:pointer;font-family:inherit;
   }
   .nav-mobile .btn-solid,.nav-mobile .btn-ghost{margin-top:12px;text-align:center;border-bottom:none;}
 
@@ -129,7 +127,7 @@
     display:flex;align-items:center;justify-content:center;
   }
   .hero-parallax{position:absolute;inset:-10%;pointer-events:none;z-index:0;}
-  .float-shape{position:absolute;will-change:transform;transition:transform .05s linear;}
+  .float-shape{position:absolute;will-change:transform;}
   .float-inner{animation:floatBob 5s ease-in-out infinite;}
   @keyframes floatBob{
     0%,100%{transform:translateY(0) rotate(0deg);}
@@ -144,15 +142,26 @@
   .shape-icon svg{width:24px;height:24px;}
 
   .hero-inner{
-    position:relative;z-index:1;max-width:640px;text-align:center;
+    position:relative;z-index:1;max-width:660px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:22px;
   }
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(232,163,61,.12);border:1px solid rgba(232,163,61,.35);
+    color:var(--amber);font-size:12.5px;font-weight:600;
+    padding:7px 14px;border-radius:999px;letter-spacing:.02em;
+  }
+  .hero-badge .pulse{
+    width:8px;height:8px;border-radius:50%;background:var(--amber);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
   .hero-inner h1{
     font-family:'Fraunces',serif;font-weight:600;
     font-size:clamp(30px,6vw,54px);line-height:1.1;
     color:var(--ivory);margin:0;
   }
-  .hero-sub{font-size:16.5px;color:var(--mist);max-width:480px;margin:0;line-height:1.65;}
+  .hero-sub{font-size:16.5px;color:var(--mist);max-width:520px;margin:0;line-height:1.65;}
   .hero-cta{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center;}
 
   @media (max-width:600px){
@@ -160,7 +169,7 @@
   }
 
   /* ================= SECTION UMUM ================= */
-  .section-head{max-width:600px;margin:0 auto 46px;text-align:center;}
+  .section-head{max-width:620px;margin:0 auto 46px;text-align:center;}
   .section-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(25px,4vw,34px);margin:0 0 12px;}
   .section-head p{font-size:15.5px;margin:0;line-height:1.6;}
   .section-head.on-light h2{color:var(--ink);}
@@ -195,18 +204,45 @@
   /* ================= CARA KERJA ================= */
   .section-cara{background:var(--navy);padding:90px 24px;}
   .cara-steps{
-    max-width:780px;margin:0 auto;list-style:none;padding:0;
-    display:grid;grid-template-columns:repeat(3,1fr);gap:30px;
+    max-width:820px;margin:0 auto;list-style:none;padding:0;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:26px;
   }
-  @media (max-width:760px){.cara-steps{grid-template-columns:1fr;max-width:400px;}}
+  @media (max-width:860px){.cara-steps{grid-template-columns:1fr 1fr;}}
+  @media (max-width:520px){.cara-steps{grid-template-columns:1fr;max-width:360px;}}
   .cara-steps li{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;}
   .cara-num{
     width:40px;height:40px;border-radius:50%;background:var(--amber);color:var(--ink);
     display:flex;align-items:center;justify-content:center;
     font-weight:700;font-family:'Fraunces',serif;font-size:16px;
   }
-  .cara-steps h3{font-family:'Fraunces',serif;font-size:17px;margin:4px 0 0;font-weight:600;color:var(--ivory);}
-  .cara-steps p{margin:0;color:var(--mist);font-size:14px;line-height:1.65;}
+  .cara-steps h3{font-family:'Fraunces',serif;font-size:16.5px;margin:4px 0 0;font-weight:600;color:var(--ivory);}
+  .cara-steps p{margin:0;color:var(--mist);font-size:13.5px;line-height:1.65;}
+
+  /* ================= FLOW (demo) ================= */
+  .section-flow{background:var(--navy-deep);padding:90px 24px;}
+  .flow-box{
+    max-width:640px;margin:0 auto;
+    background:rgba(7,7,11,.55);border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;padding:34px 28px;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .flow-item{
+    display:flex;align-items:center;gap:16px;
+    background:rgba(245,241,232,.04);border:1px solid rgba(255,255,255,.07);
+    border-radius:16px;padding:16px 18px;
+  }
+  .flow-icon{
+    width:42px;height:42px;border-radius:12px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .flow-icon svg{width:20px;height:20px;}
+  .flow-text b{display:block;font-size:14.5px;margin-bottom:2px;}
+  .flow-text span{font-size:13px;color:var(--mist);line-height:1.5;}
+  .flow-arrow{
+    text-align:center;color:var(--amber);font-size:20px;line-height:1;
+    animation:arrowBob 1.4s ease-in-out infinite;
+  }
+  @keyframes arrowBob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
 
   /* ================= CTA BANNER ================= */
   .cta-banner{
@@ -215,7 +251,7 @@
   }
   .cta-banner h2{
     font-family:'Fraunces',serif;font-weight:600;
-    font-size:clamp(24px,4vw,32px);color:var(--ink);margin:0;max-width:520px;
+    font-size:clamp(24px,4vw,32px);color:var(--ink);margin:0;max-width:540px;
   }
   .cta-banner .btn-solid{background:var(--ink);color:var(--ivory);box-shadow:0 12px 26px rgba(7,7,11,.35);}
   .cta-banner .btn-solid:hover{background:#000;}
@@ -229,63 +265,14 @@
   }
   @media (max-width:700px){.footer-inner{grid-template-columns:1fr;gap:30px;}}
   .footer-brand .nav-mark{color:var(--ivory);}
-  .footer-brand p{margin:12px 0 0;font-size:14px;line-height:1.65;max-width:280px;}
+  .footer-brand p{margin:12px 0 0;font-size:14px;line-height:1.65;max-width:300px;}
   .footer-col h4{color:var(--ivory);font-size:13.5px;margin:0 0 16px;font-weight:600;}
-  .footer-col a, .footer-col button.link-item{
+  .footer-col a{
     display:block;color:var(--mist);text-decoration:none;font-size:14px;margin-bottom:11px;
-    background:none;border:none;padding:0;cursor:pointer;font-family:inherit;text-align:left;
     transition:color .2s ease;
   }
-  .footer-col a:hover, .footer-col button.link-item:hover{color:var(--amber);}
+  .footer-col a:hover{color:var(--amber);}
   .footer-bottom{max-width:1080px;margin:0 auto;padding-top:20px;font-size:13px;text-align:center;color:#5c6270;}
-
-  /* ================= MODAL KONTAK ================= */
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(7,7,11,.62);
-    display:flex;align-items:center;justify-content:center;padding:20px;
-    z-index:100;opacity:0;pointer-events:none;transition:opacity .3s ease;
-  }
-  .modal-overlay.show{opacity:1;pointer-events:auto;}
-  .modal-box{
-    background:var(--ivory);border-radius:20px;padding:34px 28px;
-    max-width:420px;width:100%;box-shadow:0 30px 70px rgba(0,0,0,.5);
-    position:relative;color:var(--ink);
-    transform:translateY(18px) scale(.97);transition:transform .3s ease;
-  }
-  .modal-overlay.show .modal-box{transform:translateY(0) scale(1);}
-  .modal-close{
-    position:absolute;top:12px;right:14px;background:none;border:none;
-    font-size:24px;line-height:1;cursor:pointer;color:var(--slate);
-  }
-  .modal-close:hover{color:var(--ink);}
-  .modal-box h3{font-family:'Fraunces',serif;font-size:22px;margin:0 0 6px;}
-  .modal-box p.lead{margin:0 0 20px;color:var(--slate);font-size:14px;}
-
-  .field{display:flex;flex-direction:column;gap:6px;margin-top:14px;}
-  .field:first-of-type{margin-top:0;}
-  .field label{font-size:12.5px;font-weight:500;color:var(--slate);}
-  .field input, .field textarea{
-    width:100%;font-family:inherit;font-size:14.5px;padding:12px 14px;
-    border-radius:12px;border:1.5px solid #e1dcce;background:#fffdfa;color:var(--ink);
-    transition:border-color .2s ease, box-shadow .2s ease;resize:vertical;
-  }
-  .field input:focus, .field textarea:focus{
-    outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(232,163,61,.18);
-  }
-  .field.invalid input, .field.invalid textarea{border-color:var(--danger);animation:shake .35s ease;}
-  @keyframes shake{
-    0%,100%{transform:translateX(0);}
-    25%{transform:translateX(-5px);}
-    75%{transform:translateX(5px);}
-  }
-
-  .toast{
-    position:fixed;left:50%;bottom:32px;transform:translate(-50%,16px);
-    background:var(--ink);color:var(--ivory);padding:12px 20px;border-radius:12px;
-    font-size:13.5px;box-shadow:0 12px 28px rgba(0,0,0,.4);
-    opacity:0;pointer-events:none;transition:opacity .3s ease, transform .3s ease;z-index:200;
-  }
-  .toast.show{opacity:1;transform:translate(-50%,0);}
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
@@ -307,7 +294,7 @@
       <nav class="nav-menu">
         <a href="#fitur">Fitur</a>
         <a href="#cara-kerja">Cara Kerja</a>
-        <button type="button" class="btn-text js-contact-link">Kontak</button>
+        <a href="#alur">Alur</a>
       </nav>
       <div class="nav-actions">
         <a class="btn-ghost" href="auth.html">Masuk</a>
@@ -320,7 +307,7 @@
     <div class="nav-mobile" id="navMobile">
       <a href="#fitur">Fitur</a>
       <a href="#cara-kerja">Cara Kerja</a>
-      <button type="button" class="link-item js-contact-link">Kontak</button>
+      <a href="#alur">Alur</a>
       <a class="btn-ghost" href="auth.html">Masuk</a>
       <a class="btn-solid" href="auth.html">Daftar</a>
     </div>
@@ -346,7 +333,7 @@
       </div>
       <div class="float-shape" style="top:68%;right:16%;" data-depth="40">
         <div class="float-inner shape-icon" style="background:var(--teal);animation-delay:.9s;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42Z"/></svg>
         </div>
       </div>
       <div class="float-shape" style="top:76%;left:20%;" data-depth="30">
@@ -357,11 +344,12 @@
     </div>
 
     <div class="hero-inner">
-      <h1>Satu saklar, buat semua yang mau kamu sambungkan.</h1>
-      <p class="hero-sub">Colokkan bisnismu ke sistem manajemen, asisten AI, sampai layanan pelanggan — semuanya nyala dari satu tempat, tanpa ribet gonta-ganti aplikasi.</p>
+      <span class="hero-badge"><span class="pulse"></span> Customer service otomatis, 24/7</span>
+      <h1>Saklar AI CS-mu untuk Telegram &amp; WhatsApp.</h1>
+      <p class="hero-sub">Tempel API model AI dan token bot-mu ke Saklar — setiap pesan pelanggan dijawab otomatis oleh agen AI. Backend-nya cuma Google Apps Script, database-nya Google Sheets. Tanpa server, tanpa ribet.</p>
       <div class="hero-cta">
-        <a class="btn-solid btn-lg" href="auth.html">Daftar gratis</a>
-        <button type="button" class="btn-text" onclick="document.getElementById('fitur').scrollIntoView({behavior:'smooth'})">Lihat fitur</button>
+        <a class="btn-solid btn-lg" href="auth.html">Nyalakan sekarang</a>
+        <button type="button" class="btn-text" onclick="document.getElementById('cara-kerja').scrollIntoView({behavior:'smooth'})">Lihat cara kerja</button>
       </div>
     </div>
   </section>
@@ -370,29 +358,29 @@
   <section class="section-fitur" id="fitur">
     <div class="section-head on-light">
       <h2>Tiga colokan, satu saklar</h2>
-      <p>Pilih apa yang mau kamu sambungkan — Saklar yang urus koneksinya.</p>
+      <p>Sambungkan otak AI dan kedua kanal chat — Saklar yang urus koneksinya.</p>
     </div>
     <div class="fitur-grid">
       <article class="fitur-card fitur-amber">
         <div class="fitur-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 11-14h-7l0-6Z"/></svg>
         </div>
-        <h3>Manajemen bisnis</h3>
-        <p>Sambungkan operasional, tim, dan data bisnismu ke satu dashboard yang rapi dan gampang dipantau.</p>
+        <h3>Koneksi AI fleksibel</h3>
+        <p>Pakai Gemini, OpenAI, atau penyedia kompatibel lain. Cukup tempel API key dan instruksi agen — tanpa sentuh kode.</p>
       </article>
       <article class="fitur-card fitur-teal">
         <div class="fitur-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1 0 8v1a4 4 0 0 1-8 0v-1a4 4 0 0 1 0-8V6a4 4 0 0 1 4-4Z"/><path d="M8 11h8M8 15h8"/></svg>
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42Z"/></svg>
         </div>
-        <h3>Asisten AI</h3>
-        <p>Colokkan agen AI yang bisa bantu jawab, memproses, dan bikin kerjaan berulang jalan sendiri.</p>
+        <h3>Bot Telegram</h3>
+        <p>Tempel token dari @BotFather, nyalakan saklar — webhook terpasang otomatis dan bot langsung siap menjawab.</p>
       </article>
       <article class="fitur-card fitur-violet">
         <div class="fitur-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/><path d="M8.5 9.5c.5 2.5 3.5 5.5 6 6l1.5-1.5 2 1c-.5 1.5-2 2-3.5 1.5-3-1-6.5-4.5-7.5-7.5-.5-1.5 0-3 1.5-3.5l1 2-1 2Z"/></svg>
         </div>
-        <h3>Layanan pelanggan</h3>
-        <p>Sambungkan tim CS atau agen otomatis supaya pelangganmu selalu ada yang jawab, kapan saja.</p>
+        <h3>WhatsApp Business</h3>
+        <p>Terhubung ke WhatsApp Cloud API resmi dari Meta. Verifikasi webhook otomatis, pesan masuk langsung dibalas AI.</p>
       </article>
     </div>
   </section>
@@ -400,31 +388,75 @@
   <!-- ============ CARA KERJA ============ -->
   <section class="section-cara" id="cara-kerja">
     <div class="section-head on-dark">
-      <h2>Nyalain dalam tiga langkah</h2>
-      <p>Tanpa instalasi ribet, tanpa tim IT tambahan.</p>
+      <h2>Nyalain dalam empat langkah</h2>
+      <p>Tanpa instalasi, tanpa server, tanpa tim IT tambahan.</p>
     </div>
     <ol class="cara-steps">
       <li>
         <span class="cara-num">1</span>
-        <h3>Colokkan akunmu</h3>
-        <p>Daftar dan hubungkan data bisnis yang sudah kamu punya.</p>
+        <h3>Buat akun Saklar</h3>
+        <p>Daftar dalam semenit — datamu tersimpan rapi di Google Sheets.</p>
       </li>
       <li>
         <span class="cara-num">2</span>
-        <h3>Pilih yang mau disambungkan</h3>
-        <p>Manajemen, AI, atau CS — tinggal pilih sesuai kebutuhan.</p>
+        <h3>Tempel API AI</h3>
+        <p>Masukkan API key model AI dan instruksi kepribadian agen-mu.</p>
       </li>
       <li>
         <span class="cara-num">3</span>
+        <h3>Colokkan kanal</h3>
+        <p>Token bot Telegram dan kredensial WhatsApp — tinggal tempel.</p>
+      </li>
+      <li>
+        <span class="cara-num">4</span>
         <h3>Saklar menyala</h3>
-        <p>Semuanya langsung jalan dan siap dipantau dari satu tempat.</p>
+        <p>Pesan pelanggan dijawab otomatis, semuanya tercatat di Sheets.</p>
       </li>
     </ol>
   </section>
 
+  <!-- ============ ALUR PESAN ============ -->
+  <section class="section-flow" id="alur">
+    <div class="section-head on-dark">
+      <h2>Alur satu pesan</h2>
+      <p>Dari pelanggan sampai balasan — semuanya lewat Saklar.</p>
+    </div>
+    <div class="flow-box">
+      <div class="flow-item">
+        <span class="flow-icon" style="background:rgba(47,182,166,.18);border:1px solid rgba(47,182,166,.4);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
+        </span>
+        <div class="flow-text">
+          <b>Pelanggan mengirim pesan</b>
+          <span>Lewat chat Telegram bot atau nomor WhatsApp bisnismu.</span>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">
+        <span class="flow-icon" style="background:rgba(232,163,61,.16);border:1px solid rgba(232,163,61,.4);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v4M15 2v4M7 8h10l-1 6a4 4 0 0 1-8 0L7 8Z"/><path d="M12 18v4"/></svg>
+        </span>
+        <div class="flow-text">
+          <b>Saklar meneruskan ke agen AI</b>
+          <span>Apps Script meneruskan pesan + riwayat singkat ke model AI pilihanmu.</span>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">
+        <span class="flow-icon" style="background:rgba(139,124,246,.16);border:1px solid rgba(139,124,246,.4);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 11-14h-7l0-6Z"/></svg>
+        </span>
+        <div class="flow-text">
+          <b>Balasan otomatis terkirim</b>
+          <span>Jawaban AI dikirim kembali ke pelanggan — dan seluruh percakapan tercatat di Google Sheets.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ CTA BANNER ============ -->
   <section class="cta-banner">
-    <h2>Siap nyalain sambungan buat bisnismu?</h2>
+    <h2>Siap nyalain customer service otomatis buat bisnismu?</h2>
     <a class="btn-solid btn-lg" href="auth.html">Daftar sekarang</a>
   </section>
 
@@ -433,7 +465,58 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <span class="nav-mark">Saklar</span>
-        <p>Penyedia layanan berbasis aplikasi yang menghubungkan bisnis, AI, dan layanan pelanggan dalam satu saklar.</p>
+        <p>Panel penghubung agen AI customer service ke Telegram dan WhatsApp — ditenagai Google Apps Script dan Google Sheets.</p>
       </div>
       <div class="footer-col">
-        <h4>Produk
+        <h4>Produk</h4>
+        <a href="#fitur">Fitur</a>
+        <a href="#cara-kerja">Cara Kerja</a>
+        <a href="#alur">Alur Pesan</a>
+      </div>
+      <div class="footer-col">
+        <h4>Mulai</h4>
+        <a href="auth.html">Masuk</a>
+        <a href="auth.html">Daftar Gratis</a>
+        <a href="dashboard.html">Dashboard</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Saklar — Dibuat dengan ⚡ di Indonesia.</div>
+  </footer>
+
+  <script>
+    // Navbar scroll state
+    var nav = document.getElementById('siteNav');
+    window.addEventListener('scroll', function () {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // Mobile menu
+    var navToggle = document.getElementById('navToggle');
+    var navMobile = document.getElementById('navMobile');
+    navToggle.addEventListener('click', function () {
+      var open = navMobile.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navMobile.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        navMobile.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Hero parallax
+    var parallaxShapes = document.querySelectorAll('#heroParallax .float-shape');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && parallaxShapes.length) {
+      window.addEventListener('mousemove', function (e) {
+        var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        var dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
+        parallaxShapes.forEach(function (el) {
+          var depth = parseFloat(el.dataset.depth || '10');
+          el.style.transform = 'translate(' + (dx * depth * -1) + 'px,' + (dy * depth * -1) + 'px)';
+        });
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>
