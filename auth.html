@@ -28,6 +28,10 @@
     background:var(--ink);
     overflow:hidden;
     color:var(--ivory);
+    transition:background var(--dur) ease;
+  }
+  body.lights-on{
+    background:var(--navy);
   }
 
   /* ---------- Panggung saklar (kondisi mati lampu) ---------- */
@@ -39,7 +43,7 @@
     justify-content:center;
     background:var(--ink);
     transition:background var(--dur) ease;
-    z-index:5;
+    z-index:1;
   }
   body.lights-on .power-stage{
     background:var(--navy);
@@ -60,19 +64,36 @@
 
   .switch{
     appearance:none;
-    border:none;
+    border:1.5px solid #34394a;
     width:92px;
     height:148px;
     border-radius:46px;
-    background:#17171f;
+    background:#262a36;
     box-shadow:
       inset 0 3px 6px rgba(0,0,0,.6),
-      inset 0 -2px 4px rgba(255,255,255,.03),
-      0 18px 40px rgba(0,0,0,.55);
+      inset 0 -2px 4px rgba(255,255,255,.05),
+      0 18px 40px rgba(0,0,0,.55),
+      0 0 0 8px rgba(232,163,61,.06);
     padding:10px;
     cursor:pointer;
     position:relative;
-    transition:background .5s ease, box-shadow .5s ease;
+    transition:background .5s ease, box-shadow .5s ease, border-color .5s ease;
+    animation:idlePulse 2.6s ease-in-out infinite;
+  }
+  @keyframes idlePulse{
+    0%,100%{ box-shadow:
+      inset 0 3px 6px rgba(0,0,0,.6),
+      inset 0 -2px 4px rgba(255,255,255,.05),
+      0 18px 40px rgba(0,0,0,.55),
+      0 0 0 8px rgba(232,163,61,.05); }
+    50%{ box-shadow:
+      inset 0 3px 6px rgba(0,0,0,.6),
+      inset 0 -2px 4px rgba(255,255,255,.05),
+      0 18px 46px rgba(0,0,0,.55),
+      0 0 0 14px rgba(232,163,61,.12); }
+  }
+  .switch[aria-pressed="true"]{
+    animation:none;
   }
   .switch:focus-visible{
     outline:2px solid var(--amber);
@@ -106,7 +127,7 @@
     margin:0;
     font-size:14px;
     letter-spacing:.02em;
-    color:var(--slate);
+    color:#8b95a8;
     transition:color .5s ease;
   }
   .switch[aria-pressed="true"] ~ .switch-caption{
@@ -145,10 +166,12 @@
     opacity:0;
     transform:translateY(14px);
     transition:opacity .85s ease .18s, transform .85s ease .18s;
+    pointer-events:none;
   }
   body.lights-on .app-stage{
     opacity:1;
     transform:translateY(0);
+    pointer-events:auto;
   }
 
   .brand{
@@ -534,4 +557,4 @@
   });
 </script>
 </body>
-                    </html>
+  </html>
